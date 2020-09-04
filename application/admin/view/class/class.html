@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_data_tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:01 GMT -->
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>后台管理系统</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="__CSS__/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="__CSS__/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+
+    <!-- Data Tables -->
+    <link href="__CSS__/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+
+    <link href="__CSS__/animate.min.css" rel="stylesheet">
+    <link href="__CSS__/style.min862f.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>客户列表</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="">
+                           
+                        	<!--搜索框开始-->
+				             <form id='commentForm' action="./indexPage" role="form" method="post" class="form-inline">
+				                <div class="content clearfix m-b">
+				                    <div class="form-group">
+				                    	<a href="./addview" class="btn btn-primary ">添加学生信息</a><br/>
+
+		                                
+				                        
+				                        <label>学生姓名：</label>
+				                        <input type="text" class="form-control" id="username" name="username">
+				                        
+				                        <label>联系方式：</label>
+				                        <input type="text" class="form-control" id="phone" name="phone">
+				                        
+				                      
+				                        <label>学生性别：</label>
+				                        <select class="form-control" name="customer_status" id="customer_status">
+				                        	<option value="">------------请选择------------</option>
+	                                		<option value="1">男</option>
+	                                		<option value="2">女</option>
+	                                	</select>
+	                                	
+				                        <br/>
+				                        
+			                            <label>添加时间：</label>
+	                                    <input placeholder="开始日期" id="startTime" class="laydate-icon form-control layer-date"> -
+	                                    <input placeholder="结束日期" id="endTime" class="laydate-icon form-control layer-date">
+	                                    <span style="color:red">(不选时间默认当前时间往前推半年)</span>
+
+				                        
+				                        <button class="btn btn-outline-secondary" type="reset" style="margin-top:5px">重置搜索</button>
+				                        <button class="btn btn-primary" type="button" style="margin-top:5px" id="search"><strong>搜 索</strong></button>
+				                    	
+				                    </div>
+				                    
+				                </div>
+				            </form>
+				            <!--搜索框结束-->
+                        </div>
+                        
+                        
+                        <table class="table table-striped table-bordered table-hover " id="editable">
+                            <thead>
+                                <tr>
+                                	<th data-field="id">学生ID</th>
+			                        <th data-field="name">学生姓名</th>
+			                        <th data-field="phone">联系方式</th>
+			                        <th data-field="sex">性别</th>
+			                       
+			                        <th data-field="add_time">添加时间</th>
+			                        <th data-field="operate">操作</th>
+                                </tr>
+                            </thead>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="__JS__/jquery.min.js?v=2.1.4"></script>
+    <script src="__JS__/bootstrap.min.js?v=3.3.6"></script>
+    <script src="__JS__/plugins/jeditable/jquery.jeditable.js"></script>
+    <script src="__JS__/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="__JS__/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script src="__JS__/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="__JS__/content.min.js?v=1.0.0"></script>
+    <script src="__JS__/plugins/layer/layer.min.js"></script>
+    <script src="__JS__/plugins/layer/laydate/laydate.js"></script>
+    <link rel="stylesheet" href="__JS__/plugins/zTree/zTreeStyle.css" type="text/css">
+	<script type="text/javascript" src="__JS__/plugins/zTree/jquery.ztree.core-3.5.js"></script>
+	<script type="text/javascript" src="__JS__/plugins/zTree/jquery.ztree.excheck-3.5.js"></script>
+	<script type="text/javascript" src="__JS__/plugins/zTree/jquery.ztree.exedit-3.5.js"></script>
+    <script>
+        function del_one(id){
+            if(confirm("要删除该用户吗？")){
+
+                    $.ajax({
+                        type:'get',
+                    //数据传输方式
+                        url:"{:url('index/delete')}",
+                    //数据路径
+                        data:{
+                            id:id
+                        },success:function (e){
+                            var elength = e.length;
+                            var str = "<thead> <tr> <th data-field='id'>客户ID</th><th data-field='server_type_name'>业务类型</th><th data-field='customer_type'>客户类型</th><th data-field='name'>客户姓名</th><th data-field='phone'>联系方式</th><th data-field='qq'>QQ</th><th data-field='wechat'>微信</th><th data-field='customer_status'>客户状态</th><th data-field='customer_level'>客户星级</th><th data-field='add_time'>添加时间</th><th data-field='operate'>操作</th></tr> </thead>";
+                            for(var i = 0;i < 3 ;i++){
+                                //console.log(e[i].id);
+                                str += "<tr>";
+                                str += '<td>'+e[i].id+'</td>';
+                                str += '<td>'+e[i].servertype+'</td>';
+                                str += '<td>'+e[i].customertype+'</td>';
+                                str += '<td>'+e[i].username+'</td>';
+                                str += '<td>'+e[i].phone+'</td>';
+                                str += '<td>'+e[i].qq+'</td>';
+                                str += '<td>'+e[i].wechat+'</td>';
+                                str += '<td>'+e[i].customerstatus+'</td>';
+                                str += '<td>'+'xx'+'</td>';
+                                str += '<td>'+e[i].create_time+'</td>';
+                               
+                                str += "</tr>";
+                            }
+                            $('#editable').html(str);
+                        }
+
+                    })
+            }
+        }
+
+
+
+
+    function initTable() {
+        //先销毁表格
+        $('#editable').bootstrapTable('destroy');
+        //初始化表格,动态从服务器加载数据
+        $("#editable").bootstrapTable({
+            method: "get",  //使用get请求到服务器获取数据
+            url: "./class", //获取数据的地址
+            striped: true,  //表格显示条纹
+            pagination: true, //启动分页
+            pageSize: 10,  //每页显示的记录数
+            pageNumber:1, //当前第几页
+            showRefresh: true,
+            pageList: [10, 20, 30, 40, 50],  //记录数可选列表
+            sidePagination: "server", //表示服务端请求
+            //设置为undefined可以获取pageNumber，pageSize，searchText，sortName，sortOrder
+            //设置为limit可以获取limit, offset, search, sort, order
+            queryParamsType : "undefined",
+            queryParams: function queryParams(params) {   //设置查询参数
+                var param = {
+                    pageNumber: params.pageNumber,
+                    pageSize: params.pageSize,
+
+			        server_type:$('#server_type').val(),					//业务类型id
+                    username:$('#username').val(),							//客户姓名
+                    phone:$('#phone').val(),								//联系方式
+                    sex:$('#sex').val(),									//学生性别
+                    startTime:$('#startTime').val(),						//开始时间
+                    endTime:$('#endTime').val()								//结束时间
+                };
+                return param;
+            },
+            onLoadSuccess: function(){  //加载成功时执行
+                layer.msg("加载成功", {time : 1000});
+            },
+            onLoadError: function(){  //加载失败时执行
+                layer.msg("加载数据失败");
+            }
+        });
+    }
+    
+    $(document).ready(function () {
+        //调用函数，初始化表格
+        initTable();
+        //当点击查询按钮的时候执行
+        $("#search").bind("click", initTable);
+    });
+    
+    
+    //删除客户
+    function customerDel(id){
+        layer.confirm('确认删除此客户?', {icon: 3, title:'提示'}, function(index){
+            //do something
+            $.getJSON('./customerDel', {'id' : id}, function(res){
+                if(res.code == 1){
+                    layer.alert('删除成功', function(){
+                        initTable();
+                    });
+                }else{
+                    layer.alert('删除失败');
+                }
+            });
+
+            layer.close(index);
+        })
+
+    }
+    
+    </script>
+    
+    <script>
+		//时间插件
+		laydate({elem:"#startTime",event:"focus"});
+		laydate({elem:"#endTime",event:"focus"});
+		var start={elem:"#startTime",format:"YYYY/MM/DD",min:laydate.now(),max:"2099-06-16 23:59:59",istime:true,istoday:false,choose:function(datas){end.min=datas;end.start=datas}};
+	    var end={elem:"#endTime",format:"YYYY/MM/DD",min:laydate.now(),max:"2099-06-16 23:59:59",istime:true,istoday:false,choose:function(datas){start.max=datas}};
+	    laydate(start);
+	    laydate(end);
+	</script>
+
+
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/table_data_tables.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:20:02 GMT -->
+</html>

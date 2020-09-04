@@ -1,0 +1,114 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="__ACSS__/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="__ACSS__/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="__ACSS__lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="__ACSS__/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="__ACSS__/h-ui.admin/css/style.css" />
+<link rel="stylesheet" href="__ACSS__/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>产品分类</title>
+</head>
+<body>
+
+	<tr>
+		<td width="200" class="va-t"><ul id="treeDemo" class="ztree"></ul></td>
+		
+	</tr>
+</table>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__AJS__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__AJS__/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__AJS__/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="__AJS__/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__AJS__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script> 
+<script type="text/javascript">
+var setting = {
+	view: {
+		dblClickExpand: false,
+		showLine: false,
+		selectedMulti: false
+	},
+	data: {
+		simpleData: {
+			enable:true,
+			idKey: "id",
+			pIdKey: "pid",
+			rootPId: ""
+		}
+	},
+	callback: {
+		beforeClick: function(treeId, treeNode) {
+			var zTree = $.fn.zTree.getZTreeObj("tree");
+			if (treeNode.isParent) {
+				zTree.expandNode(treeNode);
+				return false;
+			} else {
+				demoIframe.attr("src",treeNode.file + ".html");
+				return true;
+			}
+		}
+	}
+};
+
+// var zNodes =[
+// 	{ id:1, pid:0, name:"一级分类", open:true},
+// 	{ id:11, pid:1, name:"二级分类"},
+// 	{ id:111, pid:11, name:"三级分类"},
+// 	{ id:112, pid:11, name:"三级分类"},
+// 	{ id:113, pid:11, name:"三级分类"},
+// 	{ id:114, pid:11, name:"三级分类"},
+// 	{ id:115, pid:11, name:"三级分类"},
+// 	{ id:12, pid:1, name:"二级分类 1-2"},
+// 	{ id:121, pid:12, name:"三级分类 1-2-1"},
+// 	{ id:122, pid:12, name:"三级分类 1-2-2"},
+// ];
+// console.log(zNodes2);
+var zNodes;
+
+	$.ajax({
+		url:"{:url('/admin/index/productcategory2')}",
+		type:"get",
+
+		async:false,
+		dataType:"json",
+		success:function(data){
+			zNodes=data;
+			//console.log(zNodes);
+		}
+	});
+	//console.log(zNodes);	
+var code;
+		
+function showCode(str) {
+	if (!code) code = $("#code");
+	code.empty();
+	code.append("<li>"+str+"</li>");
+}
+		
+$(document).ready(function(){
+	var t = $("#treeDemo");
+	t = $.fn.zTree.init(t, setting, zNodes);
+	demoIframe = $("#testIframe");
+	//demoIframe.on("load", loadReady);
+	var zTree = $.fn.zTree.getZTreeObj("tree");
+	//zTree.selectNode(zTree.getNodeByParam("id",'11'));
+});
+</script>
+</body>
+</html>
