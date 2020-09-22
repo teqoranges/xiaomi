@@ -6,12 +6,16 @@ use think\Db;
 use think\Session;
 
 class User extends Model{
-	public function registeruser($username,$password,$tel,$yzm)
+	public function registeruser($username,$password,$tel)
 	{
 		$data = ['username'=>"$username", 'pass'=>"$password", 'tel'=>"$tel"];
-		$insertRes = Db::name('user')->insert($data);
+		$insertRes = Db::table('xiaomi_user')->insert($data);
 
 		if( $insertRes == 1){
+			$redis = new \Redis();
+			$redis->connect('127.0.0.1',6379);
+			$yzmTel = "yzm".$tel;
+			$redis->del("$yzmTel");
 			return json(['code' => 1, 'data' => "login", 'msg' => '注册成功！']);
 		}else{
 			return json(['code' => -1, 'data' => "", 'msg' => '注册失败！']);
@@ -26,7 +30,7 @@ class User extends Model{
 			'pass' => ['eq',"$password"]
 		];
 
-		$loginUser = Db::name('user')->where($where)->select();
+		$loginUser = Db::table('xiaomi_user')->where($where)->select();
 
 		if($loginUser != ''){
 			session('username', $username);

@@ -52,28 +52,68 @@ class Type extends Controller{
 			}
 		}
 
-		if($pid == -1){
-			$where = [
-				'pid' => ['eq',$pid]
-			];
-			$m = Db::table('xiaomi_type')->where($where)->order('id','desc')->find();
-			$number = $m['path']+0.1;
-			if($number == 1 || $number == 2 || $number == 3 $number == 4 || $number == 5 || $number == 6 || $number == 7 || $number == 8 || $number == 9 || $number == 10){
-				$number = '1.0';
-			}
-			dump($number);
-			$insert = [
-				'name' => $flname,
-				'pid' => $pid,
-				'path' => $number,
-				'level' => substr_count($number,'.')
-			];
-			$insertType = Db::table('xiaomi_type')->where($where)->insert($insert);
+		// if($pid == -1){
+		// 	$where = [
+		// 		'pid' => ['eq',$pid]
+		// 	];
+		// 	$m = Db::table('xiaomi_type')->where($where)->order('id','desc')->find();
+		// 	$number = $m['path']+0.1;
+		// 	if($number == 1 || $number == 2 || $number == 3 || $number == 4 || $number == 5 || $number == 6 || $number == 7 || $number == 8 || $number == 9 || $number == 10){
+		// 		$number = '1.0';
+		// 	}
+		// 	//dump($number);
+		// 	$insert = [
+		// 		'name' => $flname,
+		// 		'pid' => $pid,
+		// 		'path' => $number,
+		// 		'level' => substr_count($number,'.')
+		// 	];
+		// 	$insertType = Db::table('xiaomi_type')->where($where)->insert($insert);
 
-			if($insertType){
-				return json(['code'=>'1','data'=>'','msg'=>'添加成功！']);
+		// 	if($insertType){
+		// 		return json(['code'=>'1','data'=>'','msg'=>'添加成功！']);
+		// 	}else{
+		// 		return json(['code'=>'-1','data'=>'','msg'=>'添加失败！']);
+		// 	}
+		// }
+
+		if($pid == 0){
+			$where = [
+				'pid' => ['eq','0']
+			];
+			$s = Db::table('xiaomi_type')->where($where)->order('id','desc')->find();
+			if($s){
+				$number = $s['path']+0.1;
+				if($number == 1 || $number == 2 || $number == 3 || $number == 4 || $number == 5 || $number == 6 || $number == 7 || $number == 8 || $number == 9 || $number == 10){
+					$number = '1.0';
+				}
+
+				$data = [
+					'name' => $flname,
+					'pid' => $pid,
+					'path' => $number,
+					'level' => substr_count($number,'.')
+				];
+
+				$m = Db::table('xiaomi_type')->insert($data);
+				if($m){
+					return json(['code'=>'1','data'=>'','msg'=>'添加成功！']);
+				}else{
+					return json(['code'=>'-2','data'=>'','msg'=>'添加失败！']);
+				}
 			}else{
-				return json(['code'=>'-1','data'=>'','msg'=>'添加失败！']);
+				$data = [
+					'name' => $flname,
+					'pid' => $pid,
+					'path' => "0.1",
+					'level' => 1
+				];
+				$m = Db::table('xiaomi_type')->insert($data);
+				if($m){
+					return json(['code'=>'1','data'=>'','msg'=>'添加成功！']);
+				}else{
+					return json(['code'=>'-2','data'=>'','msg'=>'添加失败！']);
+				}
 			}
 		}
 	}

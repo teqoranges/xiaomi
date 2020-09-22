@@ -30,7 +30,11 @@
 				type:'POST',
 				data:form,
 				success:function(data){
-					console.log(data.msg);
+					if(data.code == 1){
+						alert(data.msg);
+					}else{
+						alert(data.msg);
+					}
 				}
 			});
 		});

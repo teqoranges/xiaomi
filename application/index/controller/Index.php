@@ -5,11 +5,23 @@ use think\Controller;
 use app\index\controller\Base;
 use app\index\model\User;
 use think\Session;
+use think\Db;
 	
 class Index extends Controller
 {
     public function index()
     {
+        $c =Db::table('xiaomi_type');
+        $where = [
+            'pid' => ['eq','0']
+        ];
+        $m = Db::table('xiaomi_type')->where($where)->order('id','asc')->select();
+        // $type2=array();
+        // foreach($m as $key => $value){
+        //     $type2 =$c->where("pid=".$value['id'])->select();
+        // }
+
+        $this->assign('data',$m);
         return $this->fetch('');
     }
 
@@ -20,19 +32,31 @@ class Index extends Controller
 
     public function register()
     {
-    	return $this->fetch('');
+    	return $this->fetch('register');
     }
 
     public function register2($username,$password,$tel,$yzm)
     {
-    	if (!captcha_check($yzm)){
-		  return (json(['code' => '-1', 'data' => '', 'msg' => '验证码错误!']));
-		}
+  //   	if (!captcha_check($yzm)){
+		//   return (json(['code' => '-1', 'data' => '', 'msg' => '验证码错误!']));
+		// }
+        //连接本地的 Redis 服务
+        $redis = new \Redis();
+        $redis->connect('127.0.0.1', 6379);
+        $yzmTel = "yzm".$tel;
+        $rYzm = $redis->get("$yzmTel");
+        if($rYzm != ''){
+            if($rYzm == $yzm){   
+                $userClass = new User();
+                $userRes = $userClass->registeruser($username,$password,$tel);
 
-    	$userClass = new User();
-    	$userRes = $userClass->registeruser($username,$password,$tel,$yzm);
-
-    	return $userRes;
+                return $userRes;
+            }else{
+                return json(['code'=>'-2','data'=>'','msg'=>'验证码错误！']);
+            }
+        }else{
+            return json(['code'=>'-1','data'=>'','msg'=>'验证码已过期！']);
+        }
     }
 
     public function login2($username,$password,$yzm)
@@ -87,5 +111,38 @@ class Index extends Controller
     public function xiangqing()
     {
     	return $this->fetch('');
+    }
+
+    function sendsms()
+    {   
+        $get = $_GET;
+        // dump($get);
+        // echo 123;
+        // if($get['tel'] != ''){
+        //生成随机六位数，不足六位两边补零
+        $num = str_pad(mt_rand(0, 999999), 6, "0", STR_PAD_BOTH);
+
+         //连接本地的 Redis 服务
+       $redis = new \Redis();
+       $redis->connect('127.0.0.1', 6379);
+       $yzmTel = "yzm".$get['tel'];
+       $redis->set("$yzmTel","$num");
+       //echo $redis->get('yzm');
+       $redis->expire("yzmTel",60);
+
+        send($get['tel'],$num);
+        //}
+    }
+
+    function redis()
+    {
+         //连接本地的 Redis 服务
+       $redis = new \Redis();
+       $redis->connect('127.0.0.1', 6379);
+       //echo $redis->get('yzm');
+       // $redis->set('yzm','123456');
+       // //echo $redis->get('yzm');
+       // $redis->expire('yzm',60);
+       // echo $redis->ttl('yzm');
     }
 }
